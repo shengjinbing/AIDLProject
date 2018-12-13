@@ -6,10 +6,11 @@
     android:layout_height="match_parent"
     tools:context="com.example.lx.aidlclient.MainActivity">
 
-    <TextView
+    <Button
+        android:onClick="bindservice_remote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="绑定服务"
        />
 
 </LinearLayout>

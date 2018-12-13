@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.lx.aidldemo">
+    package="com.example.lx.aidldemo"
+    android:sharedUserId="com.example"
+    >
+    <!-- 通过ShaUserSerializableUser id,拥有同一个User id的多个APK可以配置成运行在同一个进程中.
+ 所以默认就是可以互相访问任意数据. 也可以配置成运行成不同的进程,
+ 同时可以访问其他APK的数据目录下的数据库和文件.就像访问本程序的数据一样。-->
 
     <application
         android:allowBackup="true"
@@ -16,6 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.activitys.ProcessActivity"
+            android:process=":remote" />
     </application>
 
 </manifest>
