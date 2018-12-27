@@ -20,6 +20,24 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = "AIDLCLIENT_LOG";
+    private IBookManager mIBookManager;
+    private IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient(){
+
+        /**
+         * 当Binder死亡的时候回调
+         */
+        @Override
+        public void binderDied() {
+            if (mIBookManager == null){
+                return;
+            }
+            mIBookManager.asBinder().unlinkToDeath(mDeathRecipient,0);
+            mIBookManager = null;
+            Log.d(TAG,"binderDied");
+            //TODO:这里重新绑定远程Service
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,14 +49,22 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            IBookManager iBookManager = IBookManager.Stub.asInterface(service);
-            try {
-                List<Book> listBook = iBookManager.getListBook();
-                Log.d(TAG,listBook.size()+","+listBook.toString());
-                iBookManager.addBook(new Book(2,"数学"));
-                Log.d(TAG, iBookManager.getListBook().size()+","+ iBookManager.getListBook().toString());
+            mIBookManager = IBookManager.Stub.asInterface(service);
 
-                iBookManager.registerListener(mIOnNewBookArrivedListener);
+            try {
+                //0是标记位，我们可以直接设置为0
+                service.linkToDeath(mDeathRecipient,0);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                List<Book> listBook = mIBookManager.getListBook();
+                Log.d(TAG,listBook.size()+","+listBook.toString());
+                mIBookManager.addBook(new Book(2,"数学"));
+                Log.d(TAG, mIBookManager.getListBook().size()+","+ mIBookManager.getListBook().toString());
+
+                mIBookManager.registerListener(mIOnNewBookArrivedListener);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

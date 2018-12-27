@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.lx.aidldemo"
-    android:sharedUserId="com.example"
-    >
-    <!-- 通过ShaUserSerializableUser id,拥有同一个User id的多个APK可以配置成运行在同一个进程中.
- 所以默认就是可以互相访问任意数据. 也可以配置成运行成不同的进程,
- 同时可以访问其他APK的数据目录下的数据库和文件.就像访问本程序的数据一样。-->
+    android:sharedUserId="com.example">
 
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"></uses-permission>
+
+    <!--自定义权限
+    protectionLevel属性：
+    1.normal：默认的，应用安装前，用户可以看到相应的权限，但无需用户主动授权。
+    2.dangerous：normal安全级别控制以外的任何危险操作。需要dangerous级别权限时，
+    Android会明确要求用户进行授权。常见的如：网络使用权限，相机使用权限及联系人信息使用权限等。
+    3.signature：它要求权限声明应用和权限使用应用使用相同的keystore进行签名。如果使用同一keystore，
+    则该权限由系统授予， 否则系统会拒绝。并且权限授予时，不会通知用户。它常用于应用内部。
+    把protectionLevel声明为signature。如果别的应用使用的不是同一个签名文件，就没办法使用该权限，
+    从而保护了自己的接收者。-->
+
+    <permission android:name="com.example.lx.permission_test"
+        android:label="BroadcastReceiverPermission"
+        android:protectionLevel="signature"></permission>
+    <uses-permission android:name="com.example.lx.permission_test"/>
+    <!--
+ 通过ShaUserSerializableUser id,拥有同一个User id的多个APK可以配置成运行在同一个进程中.
+ 所以默认就是可以互相访问任意数据. 也可以配置成运行成不同的进程,
+ 同时可以访问其他APK的数据目录下的数据库和文件.就像访问本程序的数据一样。
+    -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -24,6 +42,19 @@
         <activity
             android:name=".ui.activitys.ProcessActivity"
             android:process=":remote" />
+        <activity
+            android:name=".messenger.MessengerActivity"
+            android:process=":remote1" />
+        <activity android:name=".ui.activitys.ReceiverActivity"></activity>
+
+     <!--   <receiver
+            android:name=".ui.receiver.MyBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.MyBroadcastReceiver"></action>
+            </intent-filter>
+        </receiver>-->
     </application>
 
 </manifest>

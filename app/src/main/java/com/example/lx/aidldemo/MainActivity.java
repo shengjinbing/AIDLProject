@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.example.lx.aidldemo.ui.activitys.ProcessActivity;
+import com.example.lx.aidldemo.ui.activitys.ReceiverActivity;
 import com.example.lx.aidldemo.utils.IntentConstant;
 import com.example.lx.aidldemo.utils.SystemUtil;
 
@@ -51,5 +52,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ProcessActivity.class);
         intent.putExtra(IntentConstant.Name,age);
         startActivity(intent);
+    }
+
+    public void receiver(View view) {
+        startActivity(new Intent(this, ReceiverActivity.class));
     }
 }

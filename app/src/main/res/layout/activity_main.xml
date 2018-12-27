@@ -14,5 +14,11 @@
         android:gravity="center"
         android:background="#e2a1a1"
         android:text="开启一个activity进程" />
-
+    <TextView
+        android:onClick="receiver"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:background="#e2a1a1"
+        android:text="receiver" />
 </LinearLayout>
