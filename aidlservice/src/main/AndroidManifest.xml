@@ -25,6 +25,13 @@
                 <action android:name="it.test.aidl" />
             </intent-filter>
         </service>
+        <service
+            android:name=".services.TestService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".services.MyIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

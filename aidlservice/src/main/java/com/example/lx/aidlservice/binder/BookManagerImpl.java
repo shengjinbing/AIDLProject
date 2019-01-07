@@ -10,7 +10,24 @@ import android.os.RemoteException;
 import com.example.lx.aidlservice.Book;
 
 /**
- * AIDL的文件本质只是系统为我们提供了一种快速实现Binder的工具，仅此而已
+ * 1.AIDL的文件本质只是系统为我们提供了一种快速实现Binder的工具，仅此而已
+ * 2.Binder 通信采用 C/S 架构，从组件视角来说，包含 Client、 Server、 ServiceManager
+ * 以及 Binder 驱动，其中 ServiceManager 用于管理系统中的各种服务。
+ * 3.Binder 在 framework 层进行了封装，通过 JNI 技术调用 Native（C/C++）层的 Binder 架构。
+ * 4.Binder 在 Native 层以 ioctl 的方式与 Binder 驱动通讯。
+ *
+ *
+ *
+ * 内核模块/驱动
+ * 通过系统调用，用户空间可以访问内核空间，那么如果一个用户空间想与另外一个用户空间进行通信怎么办呢？
+ * 很自然想到的是让操作系统内核添加支持；传统的 Linux 通信机制，比如 Socket，管道等都是内核支持的；
+ * 但是 Binder 并不是 Linux 内核的一部分，它是怎么做到访问内核空间的呢？ Linux 的动态可加载内核
+ * 模块（Loadable Kernel Module，LKM）机制解决了这个问题；模块是具有独立功能的程序，它可以被单
+ * 独编译，但不能独立运行。它在运行时被链接到内核作为内核的一部分在内核空间运行。这样，Android系统
+ * 可以通过添加一个内核模块运行在内核空间，用户进程之间的通过这个模块作为桥梁，就可以完成通信了。
+ * 在 Android 系统中，这个运行在内核空间的，负责各个用户进程通过 Binder 通信的内核模块叫做
+ * Binder 驱动;
+ *
  */
 public class BookManagerImpl extends Binder implements IBookManager {
 
