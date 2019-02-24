@@ -3,16 +3,11 @@ package com.example.lx.aidldemo.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-
 /**
  * Created by lixiang
  * on 2018/12/13
  */
-public class UserParcelable implements Parcelable {
+public class UserParcelableBean implements Parcelable {
     private String name;
     private int age;
 
@@ -21,7 +16,7 @@ public class UserParcelable implements Parcelable {
      *
      * @param in
      */
-    protected UserParcelable(Parcel in) {
+    protected UserParcelableBean(Parcel in) {
         name = in.readString();
         age = in.readInt();
     }
@@ -29,7 +24,7 @@ public class UserParcelable implements Parcelable {
     /*
       CREATOR完成反序列化功能
      */
-    public static final Creator<UserParcelable> CREATOR = new Creator<UserParcelable>() {
+    public static final Creator<UserParcelableBean> CREATOR = new Creator<UserParcelableBean>() {
         /**
          *从序列化的对象中创建原始对象
          *
@@ -37,8 +32,8 @@ public class UserParcelable implements Parcelable {
          * @return
          */
         @Override
-        public UserParcelable createFromParcel(Parcel in) {
-            return new UserParcelable(in);
+        public UserParcelableBean createFromParcel(Parcel in) {
+            return new UserParcelableBean(in);
         }
 
         /**
@@ -48,8 +43,8 @@ public class UserParcelable implements Parcelable {
          * @return
          */
         @Override
-        public UserParcelable[] newArray(int size) {
-            return new UserParcelable[size];
+        public UserParcelableBean[] newArray(int size) {
+            return new UserParcelableBean[size];
         }
     };
 

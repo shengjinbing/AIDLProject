@@ -28,6 +28,41 @@ import com.example.lx.aidlservice.services.TestService;
  * 基本数据类型、String、CharSequence或者其他AIDL文件定义的方法接口，那么这些参数值的定向 Tag 默认是
  * 且只能是 in，所以除了这些类型外，其他参数值都需要明确标注使用哪种定向Tag。定向Tag具体的使用差别后边会有介绍
  * 明确导包。在AIDL文件中需要明确标明引用到的数据类型所在的包名，即使两个文件处在同个包名下。
+ *
+ *
+ *
+ * 分析服务源码：
+ *
+ * 开启过程
+ * 1.通过ContextImpl中的startServiceCommon()方法开启服务
+ *   ActivityManager.getService().startService()
+ * 2.在AMS中通过ActiveServices这个辅助AMS进行service管理的类，包括service的启动、绑定和停止等方法。
+ * 3.接下来跟Activity的启动过程一样，交给app.thread是IApplicationThread类型是ApplicationThread的实现类，
+ *    app.thread.scheduleCreateService()，所以接下来启动过程交给ApplicationThread类
+ * 4.sendMessage消息给ActivityThread的H，处理消息，首先通过类加载器创建Service的实例
+ * 5.然后创建Application对象并且调用onCreate方法，当然Application对象只创建一次。
+ * 6.创建ConTextImpl对象并通过attach方法建立二者的关系。
+ * 7.最后调用Service的Oncreate的方法，然后通过handleServiceArgs方法调用Service的onStartCommand()方法。
+ *
+ * 绑定过程
+ * 1.首先将ServiceConnection不能为空否则报异常，转化为ServiceDispatcher.InnerConnection（充当Binder角色）对象，之所以不能直接用
+ *   ServiceConnection是因为服务的绑定有可能是跨进程的，因此ServiceConnection只要借助Binder才能让远程服务端回调自己
+ *   的方法。这个过程由LoadedApk来完成。
+ * 2. IBinder binder = s.onBind(data.intent);
+ *   ActivityManager.getService().publishService(data.token, data.intent, binder);通过这个方法来告诉客户端
+ *   已经成功连接Service了(回调此方法onServiceConnected)。（Service多次绑定onbinder方法只执行一次）
+ *
+ *
+ *
+ *
+ * 开启服务和绑定服务涉及的各种情况
+ * 1.多次startService会重复调用onStartCommand方法。
+ * 2.不调用bindService方法直接调用unbindService方法，程序奔溃。
+ * 3.多次调用bindService不进行任何方法调用。
+ * 4.多次调用unbindService程序奔溃。
+ * 5.先绑定服务再打开服务直接调用onStartCommand方法，之后直接调用stopservice不生效，调用unbindService方法回调
+ *   onUnbind和onDestroy方法。
+ * 6.混合开启服务时只有调用unbindService方法才能停止服务。（stopservice一直不生效不生效）
  */
 public class MainActivity extends AppCompatActivity {
 

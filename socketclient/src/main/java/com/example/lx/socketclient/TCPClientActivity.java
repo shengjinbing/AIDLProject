@@ -24,6 +24,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+/**
+ * 1.TCP建立连接
+ * 必须进行三次握手：若A要与B进行连接，则必须
+ * 第一次握手：建立连接。客户端发送连接请求报文段，将SYN位置为1，Sequence Number为x；然后，客户端进入SYN_SEND状态，等待服务器的确认。即A发送信息给B
+ * 第二次握手：服务器收到客户端的SYN报文段，需要对这个SYN报文段进行确认。即B收到连接信息后向A返回确认信息
+ * 第三次握手：客户端收到服务器的（SYN+ACK）报文段，并向服务器发送ACK报文段。即A收到确认信息后再次向B返回确认连接信息
+ *
+ * 2.TCP释放连接
+ * TCP释放连接需要四次挥手过程，现在假设A主动释放连接：（数据传输结束后，通信的双方都可释放连接）
+ * 第一次挥手：A发送释放信息到B；（发出去之后，A->B发送数据这条路径就断了）
+ * 第二次挥手：B收到A的释放信息之后，回复确认释放的信息：我同意你的释放连接请求
+ * 第三次挥手：B发送“请求释放连接“信息给A
+ * 第四次挥手：A收到B发送的信息后向B发送确认释放信息：我同意你的释放连接请求
+ *
+ * 1.TCP和UDP
+ * 流套接字（streamsocket） ：基于 TCP协议，采用 流的方式 提供可靠的字节流服务
+ * 数据报套接字(datagramsocket)：基于 UDP协议，采用 数据报文 提供数据打包发送的服务
+ */
 public class TCPClientActivity extends Activity implements OnClickListener {
 
     private static final int MESSAGE_RECEIVE_NEW_MSG = 1;
@@ -108,7 +126,7 @@ public class TCPClientActivity extends Activity implements OnClickListener {
         Socket socket = null;
         while (socket == null) {
             try {
-                socket = new Socket("localhost", 8688);
+                socket = new Socket("192.168.199.110", 8989);
                 mClientSocket = socket;
                 mPrintWriter = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(socket.getOutputStream())), true);

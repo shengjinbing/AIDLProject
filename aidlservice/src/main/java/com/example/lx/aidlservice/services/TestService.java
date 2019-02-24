@@ -41,9 +41,14 @@ public class TestService extends Service {
         super.onCreate();
     }
 
+    /**
+     * 方法过时
+     * @param intent
+     * @param startId
+     */
     @Override
     public void onStart(Intent intent, int startId) {
-        Log.d(TAG,"onStart");
+        //Log.d(TAG,"onStart");
         super.onStart(intent, startId);
     }
 

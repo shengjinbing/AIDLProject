@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by lixiang
  * on 2018/12/13
  */
-public class UserSerializable implements Serializable {
+public class UserSerializableBean implements Serializable {
     //只有两个对象的serialVersionUID相同才能反序列化成功
     private static final long serialVersionUID = 519391278216481276L;
     private String name;
@@ -35,10 +35,10 @@ public class UserSerializable implements Serializable {
      * 序列化过程
      */
     public void writeObject(ObjectOutputStream out) throws IOException {
-        UserSerializable userSerializable = new UserSerializable();
-        userSerializable.setAge(11);
-        userSerializable.setName("zhanshan");
-        out.writeObject(userSerializable);
+        UserSerializableBean userSerializableBean = new UserSerializableBean();
+        userSerializableBean.setAge(11);
+        userSerializableBean.setName("zhanshan");
+        out.writeObject(userSerializableBean);
         out.close();
 
     }
@@ -47,7 +47,7 @@ public class UserSerializable implements Serializable {
      * 反序列化
      */
     public void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        UserSerializable userSerializable = (UserSerializable) in.readObject();
+        UserSerializableBean userSerializableBean = (UserSerializableBean) in.readObject();
         in.close();
     }
 }

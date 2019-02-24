@@ -3,10 +3,11 @@
     package="com.example.lx.aidldemo"
     android:sharedUserId="com.example">
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
-    <!--自定义权限
+    <!--
+    自定义权限
     protectionLevel属性：
     1.normal：默认的，应用安装前，用户可以看到相应的权限，但无需用户主动授权。
     2.dangerous：normal安全级别控制以外的任何危险操作。需要dangerous级别权限时，
@@ -14,12 +15,16 @@
     3.signature：它要求权限声明应用和权限使用应用使用相同的keystore进行签名。如果使用同一keystore，
     则该权限由系统授予， 否则系统会拒绝。并且权限授予时，不会通知用户。它常用于应用内部。
     把protectionLevel声明为signature。如果别的应用使用的不是同一个签名文件，就没办法使用该权限，
-    从而保护了自己的接收者。-->
+    从而保护了自己的接收者。
+    -->
 
-    <permission android:name="com.example.lx.permission_test"
+    <permission
+        android:name="com.example.lx.permission_test"
         android:label="BroadcastReceiverPermission"
-        android:protectionLevel="signature"></permission>
-    <uses-permission android:name="com.example.lx.permission_test"/>
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.example.lx.permission_test" />
+
     <!--
  通过ShaUserSerializableUser id,拥有同一个User id的多个APK可以配置成运行在同一个进程中.
  所以默认就是可以互相访问任意数据. 也可以配置成运行成不同的进程,
@@ -45,16 +50,41 @@
         <activity
             android:name=".messenger.MessengerActivity"
             android:process=":remote1" />
-        <activity android:name=".ui.activitys.ReceiverActivity"></activity>
+        <activity android:name=".ui.activitys.ReceiverActivity" />
 
-     <!--   <receiver
+        <!--
+        <receiver
             android:name=".ui.receiver.MyBroadcastReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.MyBroadcastReceiver"></action>
             </intent-filter>
-        </receiver>-->
+        </receiver>
+        -->
+
+
+        <!-- authorities唯一标识 -->
+        <provider
+            android:name=".ui.provider.BookProvider"
+            android:authorities="com.example.lx.aidldemo.ui.provider"
+            android:permission="com.example.RROVIDER"
+            android:process=":provider" />
+
+        <activity android:name=".ui.activitys.ProviderActivity" />
+        <!-- <activity android:name=".ui.activity.AActivity" /> -->
+        <activity android:name=".ui.activity.BActivity" />
+
+        <service
+            android:name=".ui.services.UIService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".ui.services.UIIntentService"
+            android:exported="false" />
+
+        <activity android:name=".ui.activity.CActivity" />
+        <activity android:name=".ui.activity.DActivity"></activity>
     </application>
 
 </manifest>

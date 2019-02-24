@@ -80,7 +80,7 @@ public class TCPServerService extends Service {
         public void run() {
             ServerSocket serverSocket = null;
             try {
-                serverSocket = new ServerSocket(8688);
+                serverSocket = new ServerSocket(8989);
             } catch (IOException e) {
                 System.out.println("establish tcp server failed, port:8688");
                 e.printStackTrace();
