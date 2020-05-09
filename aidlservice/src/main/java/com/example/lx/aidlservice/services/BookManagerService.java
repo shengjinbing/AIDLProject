@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 进程就存在16个线程。对于所有 Client 端进程的 binder 请求都是交由 Server 端进程的 binder
  * 线程来处理的
  *
+ *
  * 3.了解了 Binder 驱动，怎么与 Binder 驱动进行通讯呢？那就是通过 ServiceManager，好多文章称
  * ServiceManager 是 Binder 驱动的守护进程，大管家，其实 ServiceManager 的作用很简单就是提
  * 供了查询服务和注册服务的功能。ServiceManager 的启动分为三步，首先打开驱动创建全局链表
