@@ -8,6 +8,13 @@
     tools:context="com.example.lx.aidldemo.MainActivity">
 
     <TextView
+        android:onClick="aactivity"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:background="#e2a1a1"
+        android:text="开启一个Aactivity" />
+    <TextView
         android:onClick="activity"
         android:layout_width="match_parent"
         android:layout_height="50dp"

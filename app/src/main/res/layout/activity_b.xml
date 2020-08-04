@@ -10,6 +10,11 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="A"
+        android:onClick="startA"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="C"
         android:onClick="startC"/>
     <Button

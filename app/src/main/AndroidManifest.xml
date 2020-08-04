@@ -5,7 +5,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-
     <!--
     自定义权限
     protectionLevel属性：
@@ -17,7 +16,6 @@
     把protectionLevel声明为signature。如果别的应用使用的不是同一个签名文件，就没办法使用该权限，
     从而保护了自己的接收者。
     -->
-
     <permission
         android:name="com.example.lx.permission_test"
         android:label="BroadcastReceiverPermission"
@@ -25,11 +23,6 @@
 
     <uses-permission android:name="com.example.lx.permission_test" />
 
-    <!--
- 通过ShaUserSerializableUser id,拥有同一个User id的多个APK可以配置成运行在同一个进程中.
- 所以默认就是可以互相访问任意数据. 也可以配置成运行成不同的进程,
- 同时可以访问其他APK的数据目录下的数据库和文件.就像访问本程序的数据一样。
-    -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -37,6 +30,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service
+            android:name=".ui.services.MyIntentService"
+            android:exported="false"></service>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,7 +48,6 @@
             android:name=".messenger.MessengerActivity"
             android:process=":remote1" />
         <activity android:name=".ui.activitys.ReceiverActivity" />
-
         <!--
         <receiver
             android:name=".ui.receiver.MyBroadcastReceiver"
@@ -62,8 +58,6 @@
             </intent-filter>
         </receiver>
         -->
-
-
         <!-- authorities唯一标识 -->
         <provider
             android:name=".ui.provider.BookProvider"
@@ -72,7 +66,9 @@
             android:process=":provider" />
 
         <activity android:name=".ui.activitys.ProviderActivity" />
-        <!-- <activity android:name=".ui.activity.AActivity" /> -->
+        <activity
+            android:name=".ui.activity.AActivity"
+            android:taskAffinity="com.nini.nc" />
         <activity android:name=".ui.activity.BActivity" />
 
         <service
@@ -84,7 +80,7 @@
             android:exported="false" />
 
         <activity android:name=".ui.activity.CActivity" />
-        <activity android:name=".ui.activity.DActivity"></activity>
+        <activity android:name=".ui.activity.DActivity" />
     </application>
 
 </manifest>

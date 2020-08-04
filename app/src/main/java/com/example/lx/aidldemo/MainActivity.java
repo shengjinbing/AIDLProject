@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.example.lx.aidldemo.ui.activity.AActivity;
 import com.example.lx.aidldemo.ui.activitys.ProcessActivity;
 import com.example.lx.aidldemo.ui.activitys.ProviderActivity;
 import com.example.lx.aidldemo.ui.activitys.ReceiverActivity;
@@ -72,6 +73,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    public void aactivity(View view) {
+        Intent intent = new Intent(this, AActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
     /**
      * 开启一个进程activity，
      * 通过JNI在native层去fork一个新的进程
