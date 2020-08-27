@@ -41,6 +41,13 @@ public class ReceiverActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * 1、只能传输在App内部，不会被其他App接收，确保数据安全
+     * 2、接收不到其他App广播，免干扰
+     * 3、比BrocastReceiver更加高效
+     * 4、LocalBroadcastManager不能静态注册，只能动态注册
+     * 5、整体设计就是观察者模式（EventBus也可以说实现）
+     */
     private void initLocalBroadcastManager() {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.loacl");

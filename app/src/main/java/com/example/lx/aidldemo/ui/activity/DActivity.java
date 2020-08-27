@@ -84,6 +84,9 @@ public class DActivity extends AppCompatActivity {
 
     public void startC(View view) {
         Intent intent = new Intent(this, CActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        /*setResult(100);
+        finish();*/
     }
 }

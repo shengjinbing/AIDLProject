@@ -1,5 +1,6 @@
 package com.example.lx.aidldemo;
 
+import android.app.IntentService;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -12,9 +13,11 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.lx.aidldemo.ui.activity.AActivity;
+import com.example.lx.aidldemo.ui.activity.CActivity;
 import com.example.lx.aidldemo.ui.activitys.ProcessActivity;
 import com.example.lx.aidldemo.ui.activitys.ProviderActivity;
 import com.example.lx.aidldemo.ui.activitys.ReceiverActivity;
+import com.example.lx.aidldemo.ui.services.UIIntentService;
 import com.example.lx.aidldemo.ui.services.UIService;
 import com.example.lx.aidldemo.utils.IntentConstant;
 
@@ -74,10 +77,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     *
+     * 开启AActivity
+     * @param view
+     */
     public void aactivity(View view) {
         Intent intent = new Intent(this, AActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    /**
+     * 开启CActivity
+     * @param view
+     */
+    public void Cactivity(View view) {
+        Intent intent = new Intent(this, CActivity.class);
         startActivity(intent);
     }
     /**
@@ -125,4 +141,20 @@ public class MainActivity extends AppCompatActivity {
             }
         },BIND_AUTO_CREATE);
     }
+
+    public void intentservice(View view){
+        bindService(new Intent(this, UIIntentService.class), new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        },BIND_AUTO_CREATE);
+    }
+
+
 }
