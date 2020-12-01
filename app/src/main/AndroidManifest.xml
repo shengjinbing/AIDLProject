@@ -63,11 +63,6 @@
             android:process=":provider" />
 
         <activity android:name=".ui.activitys.ProviderActivity" />
-        <activity
-            android:name=".ui.activity.AActivity"
-            android:taskAffinity="com.nini.nc" />
-        <activity android:name=".ui.activity.BActivity" />
-
         <service
             android:name=".ui.services.UIService"
             android:enabled="true"
@@ -76,8 +71,20 @@
             android:name=".ui.services.UIIntentService"
             android:exported="false" />
 
-        <activity android:name=".ui.activity.CActivity" />
-        <activity android:name=".ui.activity.DActivity" />
+<!--        android:taskAffinity="com.nini.nc"-->
+        <activity
+            android:name=".ui.activity.AActivity"
+            android:launchMode="singleTask"
+            />
+        <activity android:name=".ui.activity.BActivity"
+            android:theme="@style/AppThemeA"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            />
+        <activity android:name=".ui.activity.CActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".ui.activity.DActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

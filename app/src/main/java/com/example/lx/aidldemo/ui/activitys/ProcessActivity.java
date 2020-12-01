@@ -16,6 +16,16 @@ import java.util.List;
 
 /**
  * 进程间不能共享数据
+ *
+ * 前台进程
+ * 用户正在交互的 Activity（ onResume() ）
+ * 当某个 Service 绑定正在交互的 Activity
+ * 被主动调用为前台 Service（ startForeground() ）
+ * 组件正在执行生命周期的回调（ onCreate() 、onStart() 、onDestory() ）
+ * BroadcastReceiver 正在执行 onReceive()
+ *
+ * 作者：_yuanhao
+ * 链接：https://juejin.cn/post/6844903983656468488
  */
 public class ProcessActivity extends AppCompatActivity {
     private final static String TAG = "BBBBB";
