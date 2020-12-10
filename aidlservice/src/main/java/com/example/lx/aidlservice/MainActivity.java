@@ -6,33 +6,13 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.example.lx.aidlservice.services.TestService;
 
 /**
- * AIDL的语法十分简单，与Java语言基本保持一致，需要记住的规则有以下几点：
- * 1.AIDL文件以 .aidl 为后缀名
- * 2.AIDL支持的数据类型分为如下几种：
- * 3.八种基本数据类型：byte、char、short、int、long、float、double、boolean
- * 4.String，CharSequence
- * 5.实现了Parcelable接口的数据类型
- * 6.List 类型。List承载的数据必须是AIDL支持的类型，或者是其它声明的AIDL对象
- * 7.Map类型。Map承载的数据必须是AIDL支持的类型，或者是其它声明的AIDL对象
- * <p>
- * AIDL文件可以分为两类。一类用来声明实现了Parcelable接口的数据类型，以供其他AIDL文件使用那些非默认支持的数据类型。
- * 还有一类是用来定义接口方法，声明要暴露哪些接口给客户端调用，定向Tag就是用来标注这些方法的参数值
- * 定向Tag。定向Tag表示在跨进程通信中数据的流向，用于标注方法的参数值，分为 in、out、inout 三种。
- * 其中 in 表示数据只能由客户端流向服务端， out 表示数据只能由服务端流向客户端，
- * 而 inout 则表示数据可在服务端与客户端之间双向流通。此外，如果AIDL方法接口的参数值类型是：
- * 基本数据类型、String、CharSequence或者其他AIDL文件定义的方法接口，那么这些参数值的定向 Tag 默认是
- * 且只能是 in，所以除了这些类型外，其他参数值都需要明确标注使用哪种定向Tag。定向Tag具体的使用差别后边会有介绍
- * 明确导包。在AIDL文件中需要明确标明引用到的数据类型所在的包名，即使两个文件处在同个包名下。
- *
- *
- *
  * 分析服务源码：
- *
  * 开启过程
  * 1.通过ContextImpl中的startServiceCommon()方法开启服务
  *   ActivityManager.getService().startService()
@@ -53,8 +33,6 @@ import com.example.lx.aidlservice.services.TestService;
  *   已经成功连接Service了(回调此方法onServiceConnected)。（Service多次绑定onbinder方法只执行一次）
  *
  *
- *
- *
  * 开启服务和绑定服务涉及的各种情况
  * 1.多次startService会重复调用onStartCommand方法。
  * 2.不调用bindService方法直接调用unbindService方法，程序奔溃。
@@ -63,6 +41,14 @@ import com.example.lx.aidlservice.services.TestService;
  * 5.先绑定服务再打开服务直接调用onStartCommand方法，之后直接调用stopservice不生效，调用unbindService方法回调
  *   onUnbind和onDestroy方法。
  * 6.混合开启服务时只有调用unbindService方法才能停止服务。（stopservice一直不生效不生效）
+ *
+ * 面试题：
+ * 1.startService 和 bindService 有什么不同？为什么 bindService 能和 Activity 的生命周期联动？
+ *  Activity 在销毁的时候顺带把 Service 销毁了(只有bindService时候activity销毁的时候会调用onUnbind->onDestroy,前提不能先开启服务);
+ *  bindService 方法执行时，LoadedApk 会记录 ServiceConnection 信息Activity 执行 finish 方法时，会通过
+ *  LoadedApk 检查 Activity 是否存在未注销/解绑的 BroadcastReceiver和 ServiceConnection，如果有，那么会
+ *  通知 AMS 注销/解绑对应的 BroadcastReceiver 和 Service，并打印异常信息，告诉用户应该主动执行注销/解绑的操作
+ *  链接：https://www.jianshu.com/p/5bc8ed941722
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -71,13 +57,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TestService.TAG,"onCreate");
         setContentView(R.layout.activity_main);
         mIntent = new Intent(this, TestService.class);
     }
-
     /**
      * onStart已经过时被onStartCommand取代
-     * 1.onCreate —》onStartCommand
+     * 1.onCreate —> onStartCommand
      * 2.多次开启服务走onStartCommand方法
      * @param view
      */
@@ -95,18 +81,28 @@ public class MainActivity extends AppCompatActivity {
      * 所以这个实例是谁new的呢是服务它自己new的它自己，他自己实例化了自己，这是他门很大一区别，所以这个绑定
      * 说白了你就是发了一个请求，当它接收到了请求了，谁接收啊，就是我们的serviceMessenger，来接收，接收到了
      * 这样的请求之后，他就会考虑自己要不要去把这个服务实例化，所以大家要注意这点，那好我们就用默认的参数。
+     *
+     * BIND_AUTO_CREATE：收到绑定需求，如果Service尚未创建，则立即创建。
+     * BIND_DEBUG_UNBIND：用于测试使用，对unbind调用不匹配的调试帮助。
+     * BIND_NOT_FOREGROUND：不允许此绑定将目标服务的进程提升到前台调度优先级
+     *
+     * 独立于Activity运行，自行结束或被叫停
      * @param view
      */
     public void bindService(View view) {
-        //1.onCreate —》onBind  —》（onServiceConnected）
+        //1.onCreate —>onBind  —>（onServiceConnected）
         //2、多次调用bindService，服务本身未执行任何操作。
         //BIND_AUTO_CREATE 只要绑定存在，就自动建立
         bindService(mIntent,mServiceConnection ,BIND_AUTO_CREATE);
     }
 
     /**
-     * onUnbind —》onDestroy
+     * onUnbind —>onDestroy
      * 1.所以一次unBindService就能结束服务。（若多次调用unBindService，第一次有用，后面会出错）
+     * 2.绑定于Activity运行，Activity结束时，会被叫停
+     * 3.Logcat中爆出了这样的错误Activity has leaked ServiceConnection that was originally bound here。
+     *   也就是说ServiceConnection内存泄漏了。这也是为什么我们一直说需要解绑的原因。
+     *
      */
     public void unbindService(View view) {
         unbindService(mServiceConnection);
@@ -136,4 +132,42 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TestService.TAG,"onStart");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TestService.TAG,"onRestart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TestService.TAG,"onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TestService.TAG,"onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TestService.TAG,"onStop");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TestService.TAG,"onDestroy");
+    }
+
 }

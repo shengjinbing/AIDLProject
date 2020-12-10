@@ -12,6 +12,8 @@ import com.example.lx.aidldemo.ui.receiver.LocalReceiver;
 import com.example.lx.aidldemo.ui.receiver.MyBroadcastReceiver;
 import com.example.lx.aidldemo.ui.receiver.MyBroadcastReceiver1;
 
+import static android.content.Intent.FLAG_RECEIVER_FOREGROUND;
+
 /**
  * 广播的安全性问题:
  * 1.其他App可能会针对性的发出与当前App intent-filter相匹配的广播，由此导致当前App不断接收到广播并处理；
@@ -20,10 +22,13 @@ import com.example.lx.aidldemo.ui.receiver.MyBroadcastReceiver1;
  * 4.在广播发送和接收时，都增加上相应的permission，用于权限验证；
  * 5.发送广播时，指定特定广播接收器所在的包名，具体是通过intent.setPackage(packageName)指定，这样此广播将只会发送到此包中的App内与之相匹配的有效广播接收器中。
  * 6.采用LocalBroadcastManager的方式
- * <p>
- * <p>
+ *
+ *
  * 静态注册：context为ReceiverRestrictedContext
+ *    常驻广播，不受任何组件的生命周期影响，应用程序关闭后有信息广播来，程序依旧会被系统调用
+ *    缺点：耗电、占内存
  * 动态注册：context为Activity的context
+ *    非常驻，非常灵活跟随组件的生命周期变化（组件结束 = 广播结束，在组件结束前，必须移除广播接受者）
  * LocalBroadcastManager的动态注册：context为Application的context
  */
 public class ReceiverActivity extends AppCompatActivity {
@@ -103,7 +108,12 @@ public class ReceiverActivity extends AppCompatActivity {
      * @param view
      */
     public void send(View view) {
-        sendBroadcast(new Intent("android.net"));
+        Intent intent = new Intent("android.net");
+        //设置为前台广播，前台广播超时为10s，后台广播超时为60s
+        //FLAG_RECEIVER_FOREGROUND来决定把该广播是放入前台广播队列或者后台广播队列，前台广播队列的超时为10s，后台广
+        // 播队列的超时为60s，默认情况下广播是放入后台广播队列，除非指明加上FLAG_RECEIVER_FOREGROUND标识
+        intent.setFlags(FLAG_RECEIVER_FOREGROUND);
+        sendBroadcast(intent);
     }
 
     /**
@@ -134,4 +144,17 @@ public class ReceiverActivity extends AppCompatActivity {
         intent.setAction("android.net.loacl");
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
+
+
+    /**
+     * 1.如果发送者发送了某个广播，而接收者在这个广播发送后才注册自己的 Receiver ，这时接收者便无法接收到刚才的广播
+     * 2.不建议使用粘性广播会引起一些不可预测的问题
+     * @param view
+     */
+    public void sendStickLocal(View view) {
+        Intent intent = new Intent();
+        intent.setAction("android.net.loacl");
+        sendStickyBroadcast(new Intent("android.net"));
+        }
+
 }

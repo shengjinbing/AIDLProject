@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <!--
     自定义权限
     protectionLevel属性：
@@ -30,7 +31,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".ui.services.ServiceActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -63,28 +64,27 @@
             android:process=":provider" />
 
         <activity android:name=".ui.activitys.ProviderActivity" />
+
         <service
             android:name=".ui.services.UIService"
             android:enabled="true"
             android:exported="false" />
         <service
             android:name=".ui.services.UIIntentService"
-            android:exported="false" />
-
-<!--        android:taskAffinity="com.nini.nc"-->
+            android:exported="false" /> <!-- android:taskAffinity="com.nini.nc" -->
         <activity
             android:name=".ui.activity.AActivity"
-            android:launchMode="singleTask"
-            />
-        <activity android:name=".ui.activity.BActivity"
-            android:theme="@style/AppThemeA"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.activity.BActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            />
-        <activity android:name=".ui.activity.CActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".ui.activity.DActivity"
-            android:screenOrientation="portrait"/>
+            android:theme="@style/AppThemeA" />
+        <activity
+            android:name=".ui.activity.CActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.DActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

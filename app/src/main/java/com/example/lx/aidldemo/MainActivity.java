@@ -17,6 +17,7 @@ import com.example.lx.aidldemo.ui.activity.CActivity;
 import com.example.lx.aidldemo.ui.activitys.ProcessActivity;
 import com.example.lx.aidldemo.ui.activitys.ProviderActivity;
 import com.example.lx.aidldemo.ui.activitys.ReceiverActivity;
+import com.example.lx.aidldemo.ui.services.ServiceActivity;
 import com.example.lx.aidldemo.ui.services.UIIntentService;
 import com.example.lx.aidldemo.ui.services.UIService;
 import com.example.lx.aidldemo.utils.IntentConstant;
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void aactivity(View view) {
         Intent intent = new Intent(this, AActivity.class);
-        startActivity(intent);
+        getApplication().startActivity(intent);
     }
 
     /**
@@ -142,18 +143,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void intentservice(View view){
-        bindService(new Intent(this, UIIntentService.class), new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
-        },BIND_AUTO_CREATE);
+        startActivity(new Intent(this, ServiceActivity.class));
     }
-
-
 }
