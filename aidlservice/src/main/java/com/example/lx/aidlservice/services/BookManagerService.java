@@ -56,6 +56,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 供了查询服务和注册服务的功能。ServiceManager 的启动分为三步，首先打开驱动创建全局链表
  * binder_procs，然后将自己当前进程信息保存到 binder_procs 链表，最后开启 loop 不断的处理共享内
  * 存中的数据，并处理 BR_xxx 命令（ioctl 的命令，BR 可以理解为 binder reply 驱动处理完的响应）。
+ *
+ *
+ * 面试官：看你简历上写熟悉 AIDL，说一说 oneway 吧
+ * oneway 主要有两个特性：异步调用和串行化处理。异步调用是指应用向 binder 驱动发送数据后不需要挂起线程等待 binder 驱动的回复，而是直接结束。
+ * 像一些系统服务调用应用进程的时候就会使用 oneway，比如 AMS 调用应用进程启动 Activity，这样就算应用进程中做了耗时的任务，也不会阻塞系统服务的运行。
+ * 串行化处理是指对于一个服务端的 AIDL 接口而言，所有的 oneway 方法不会同时执行，binder 驱动会将他们串行化处理，排队一个一个调用。
+ * 面试官：有了解过相关的 binder 协议吗？
+ * 涉及到的 binder 命令也有规律，由外部发送给 binder 驱动的都是 BC_ 开头，由 binder 驱动发往外部的都是 BR_开头。
+ * 面试官：怎么理解客户端线程挂起等待呢？有没有实际占用 CPU 的调度？
+ * 这里的挂起相当于 Thread 的 sleep，是真正的"休眠"，底层调用的是 waiteventinterruptible() Linux 系统函数。
+ * 面试官：你是从哪里了解到 waiteventinterruptible() 函数的呢？
+ * 在学习 Handle 机制的时候，Handle 中最关键的地方就是 Looper 的阻塞与唤醒，阻塞是调用了 nativePollOnce() 方法，当时对它的底层实现感兴趣，
+ * 就去了解了一下，也学习到 Linux 用来实现阻塞/唤醒的 select、poll 和 epoll 机制
+ *
  */
 public class BookManagerService extends Service {
     private final static String TAG = "AIDLSERVIVE_LOG";
@@ -103,33 +117,33 @@ public class BookManagerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        books.add(new Book(1,"android"));
-        books.add(new Book(2,"IOS"));
+        books.add(new Book(1, "android"));
+        books.add(new Book(2, "IOS"));
         new Thread(new AddBookRunnable()).start();
 
     }
 
-    public class AddBookRunnable implements Runnable{
+    public class AddBookRunnable implements Runnable {
 
         @Override
         public void run() {
-            while (!mIsDestory.get()){
+            while (!mIsDestory.get()) {
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    Log.d(TAG,"sleep");
+                    Log.d(TAG, "sleep");
                 }
                 int bookid = books.size() + 1;
                 Book book = new Book(bookid, "数学" + bookid);
                 books.add(book);
-                Log.d(TAG,books.size()+"本书");
+                Log.d(TAG, books.size() + "本书");
                 for (int i = 0; i < mIOnNewBookArrivedListeners.size(); i++) {
                     try {
                         mIOnNewBookArrivedListeners.get(i).onNewBookArrived(book);
                     } catch (RemoteException e) {
                         e.printStackTrace();
-                        Log.d(TAG,"RemoteException");
+                        Log.d(TAG, "RemoteException");
                     }
                 }
             }
@@ -139,7 +153,7 @@ public class BookManagerService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.d(TAG,"onDestroy");
+        Log.d(TAG, "onDestroy");
         mIsDestory.set(true);
         super.onDestroy();
     }

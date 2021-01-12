@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AIDLDemo</string>
+    <string name="app_real_name">医加</string>
+
 </resources>

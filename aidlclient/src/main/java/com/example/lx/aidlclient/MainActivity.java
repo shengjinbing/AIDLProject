@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d("BBBBB",Thread.currentThread()+"11111111");
             mIBookManager = IBookManager.Stub.asInterface(service);
 
             try {

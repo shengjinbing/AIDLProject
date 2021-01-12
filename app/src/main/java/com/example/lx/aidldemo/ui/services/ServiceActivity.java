@@ -16,6 +16,7 @@ public class ServiceActivity extends AppCompatActivity {
 
 
     private Intent mIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,12 +24,13 @@ public class ServiceActivity extends AppCompatActivity {
         mIntent = new Intent(this, UIIntentService.class);
 
     }
+
     public void startService(View view) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 int i = 0;
-                while (i++ < 3){
+                while (i++ < 3) {
                     SystemClock.sleep(4000);
                     startService(mIntent);
                 }
@@ -37,11 +39,15 @@ public class ServiceActivity extends AppCompatActivity {
 
     }
 
+    public void starNotifi(View view) {
+        startService(new Intent(this,NotificationService.class));
+    }
+
     public void bindService(View view) {
         //1.onCreate —>onBind  —>（onServiceConnected）
         //2、多次调用bindService，服务本身未执行任何操作。
         //BIND_AUTO_CREATE 只要绑定存在，就自动建立
-        bindService(mIntent,mServiceConnection ,BIND_AUTO_CREATE);
+        bindService(mIntent, mServiceConnection, BIND_AUTO_CREATE);
     }
 
     public void unbindService(View view) {
@@ -67,36 +73,36 @@ public class ServiceActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(UIIntentService.TAG,"onStart");
+        Log.d(UIIntentService.TAG, "onStart");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.d(UIIntentService.TAG,"onRestart");
+        Log.d(UIIntentService.TAG, "onRestart");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(UIIntentService.TAG,"onResume");
+        Log.d(UIIntentService.TAG, "onResume");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(UIIntentService.TAG,"onPause");
+        Log.d(UIIntentService.TAG, "onPause");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(UIIntentService.TAG,"onStop");
+        Log.d(UIIntentService.TAG, "onStop");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(UIIntentService.TAG,"onDestroy");
+        Log.d(UIIntentService.TAG, "onDestroy");
     }
 }

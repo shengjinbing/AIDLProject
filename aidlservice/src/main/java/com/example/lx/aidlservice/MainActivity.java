@@ -1,15 +1,20 @@
 package com.example.lx.aidlservice;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.example.lx.aidlservice.services.BookManagerService;
 import com.example.lx.aidlservice.services.TestService;
+
+import java.util.List;
 
 /**
  * 分析服务源码：
@@ -169,5 +174,75 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(TestService.TAG,"onDestroy");
     }
+    /******************************************同一个进程的binder服务************************************************/
+    private final static String TAG = "AIDLCLIENT_LOG";
+    private IBookManager mIBookManager;
+    private IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient(){
 
+        /**
+         * 当Binder死亡的时候回调
+         */
+        @Override
+        public void binderDied() {
+            if (mIBookManager == null){
+                return;
+            }
+            mIBookManager.asBinder().unlinkToDeath(mDeathRecipient,0);
+            mIBookManager = null;
+            Log.d(TAG,"binderDied");
+            //TODO:这里重新绑定远程Service
+        }
+    };
+
+    IOnNewBookArrivedListener mIOnNewBookArrivedListener = new IOnNewBookArrivedListener.Stub() {
+
+
+        @Override
+        public void onNewBookArrived(Book newBook) throws RemoteException {
+            Log.d(TAG,newBook.toString());
+        }
+    };
+
+    ServiceConnection mServiceConnection1 = new ServiceConnection(){
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mIBookManager = IBookManager.Stub.asInterface(service);
+
+            try {
+                //0是标记位，我们可以直接设置为0
+                service.linkToDeath(mDeathRecipient,0);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                List<Book> listBook = mIBookManager.getListBook();
+                Log.d(TAG,listBook.size()+","+listBook.toString());
+                mIBookManager.addBook(new Book(2,"数学"));
+                Log.d(TAG, mIBookManager.getListBook().size()+","+ mIBookManager.getListBook().toString());
+
+                mIBookManager.registerListener(mIOnNewBookArrivedListener);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
+    /**
+     * 绑定同进程的binder服务
+     * @param view
+     */
+    public void bindBinderService(View view) {
+        bindService(new Intent(this, BookManagerService.class),mServiceConnection1, Context.BIND_AUTO_CREATE);
+    }
+
+    public void unbindservice_remote(View view) {
+        unbindService(mServiceConnection1);
+    }
 }

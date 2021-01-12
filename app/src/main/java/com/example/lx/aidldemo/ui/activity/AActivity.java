@@ -71,7 +71,6 @@ import com.example.lx.aidldemo.R;
  * 如果当前处于该activity，此时会触发activity的onNewIntent。
  * FLAG_ACTIVITY_NEW_TASK+FLAG_ACTIVITY_CLEAR_TOP用在app没在运行中，启动主页的activity，然后在相应的activity
  * 中做相应的activity跳转。
-
  *
  */
 public class AActivity extends AppCompatActivity {

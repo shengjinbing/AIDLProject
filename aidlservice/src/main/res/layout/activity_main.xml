@@ -34,6 +34,18 @@
             android:layout_height="wrap_content"
             android:onClick="stopService"
             android:text="关闭服务" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="bindBinderService"
+            android:text="开启同一个进程的binder服务" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="unbindservice_remote"
+            android:text="开启同一个进程的binder服务" />
     </LinearLayout>
 
 
