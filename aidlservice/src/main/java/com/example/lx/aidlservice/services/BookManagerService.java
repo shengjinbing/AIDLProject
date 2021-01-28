@@ -58,7 +58,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 存中的数据，并处理 BR_xxx 命令（ioctl 的命令，BR 可以理解为 binder reply 驱动处理完的响应）。
  *
  *
- * 面试官：看你简历上写熟悉 AIDL，说一说 oneway 吧
+ * 面试官：看你简历上写熟悉 AIDL，说一说 oneway（d单行） 吧
  * oneway 主要有两个特性：异步调用和串行化处理。异步调用是指应用向 binder 驱动发送数据后不需要挂起线程等待 binder 驱动的回复，而是直接结束。
  * 像一些系统服务调用应用进程的时候就会使用 oneway，比如 AMS 调用应用进程启动 Activity，这样就算应用进程中做了耗时的任务，也不会阻塞系统服务的运行。
  * 串行化处理是指对于一个服务端的 AIDL 接口而言，所有的 oneway 方法不会同时执行，binder 驱动会将他们串行化处理，排队一个一个调用。
@@ -69,6 +69,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 面试官：你是从哪里了解到 waiteventinterruptible() 函数的呢？
  * 在学习 Handle 机制的时候，Handle 中最关键的地方就是 Looper 的阻塞与唤醒，阻塞是调用了 nativePollOnce() 方法，当时对它的底层实现感兴趣，
  * 就去了解了一下，也学习到 Linux 用来实现阻塞/唤醒的 select、poll 和 epoll 机制
+ *
+ *
+ * 1.基于 mmap 又是如何实现一次拷贝的？
+ * Client 与 Server 处于不同进程有着不同的虚拟地址规则，所以无法直接通信。而一个页框可以映射给多个页，那么就可以将一块物理内存分别与 Client 和 Server 的虚拟内存块进行映射。
+ * 如图， Client 就只需 copy_from_user 进行一次数据拷贝，Server 进程就能读取到数据了。另外映射的虚拟内存块大小将近 1M (1M-8K)，所以 IPC 通信传输的数据量也被限制为此值。
+ * 2.怎么理解页框和页？
+ * 页框是指一块实际的物理内存，页是指程序的一块内存数据单元。内存数据一定是存储在实际的物理内存上，即页必然对应于一个页框，页数据实际是存储在页框上的。
+ * 页框和页一样大，都是内核对内存的分块单位。一个页框可以映射给多个页，也就是说一块实际的物理存储空间可以映射给多个进程的多个虚拟内存空间，这也是 mmap 机制依赖的基础规则。
  *
  */
 public class BookManagerService extends Service {
