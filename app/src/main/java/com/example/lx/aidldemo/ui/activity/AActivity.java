@@ -9,6 +9,9 @@ import android.view.View;
 import com.example.lx.aidldemo.R;
 
 /**
+ * 任务栈？返回栈？启动模式？
+ * https://mp.weixin.qq.com/s/9fwQscSZ10pFdmi7bUFaaA（重要）
+ *
  * 1、standard:这个是android默认的Activity启动模式，每启动一个Activity都会被实例化一个Activity，并且新创建的Activity在堆栈中会在栈顶。
  *
  * 2、singleTop:如果当前要启动的Activity就是在栈顶的位置，那么此时就会复用该Activity，并且不会重走onCreate方法，会直接它的onNewIntent方法，

@@ -83,7 +83,8 @@
             android:launchMode="singleTask" />
         <activity
             android:name=".ui.activity.BActivity"
-            android:theme="@style/AppThemeA" />
+            android:theme="@style/AppThemeA"
+           />
         <activity
             android:name=".ui.activity.CActivity"
             android:screenOrientation="portrait" />
